@@ -21,38 +21,105 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+## Push ke GitHub
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1. Buat repository GitHub
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. Masuk ke GitHub dan pilih **New repository**.
+2. Tentukan nama repository dan visibilitasnya.
+3. Untuk menghindari konflik awal, buat repository kosong tanpa README, `.gitignore`, atau license otomatis.
+4. Salin URL HTTPS repository yang ditampilkan GitHub.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 2. Commit dan push branch fitur
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Jalankan perintah berikut dari folder proyek. Ganti URL dengan repository Anda.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git init -b main
+git add .
+git status
+git commit -m "chore: initial project commit"
+git remote add origin https://github.com/USERNAME/NAMA-REPOSITORY.git
+git switch -c feature/initial-upload
+git push -u origin feature/initial-upload
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Setelah push berhasil, buka repository di GitHub dan buat **Pull Request** dari `feature/initial-upload` ke `main`. Tinjau perubahan sebelum menggabungkannya.
 
-## Contributing
+### Push perubahan berikutnya
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Untuk mengirim perubahan yang sudah ada di branch kerja:
 
-## Code of Conduct
+```bash
+git status
+git add README.md
+git commit -m "docs: update project README"
+git push
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Jika perubahan baru perlu dipisahkan, buat branch terlebih dahulu, lalu push branch tersebut dan ajukan Pull Request:
 
-## Security Vulnerabilities
+```bash
+git switch -c docs/update-project-readme
+git add README.md
+git commit -m "docs: update project README"
+git push -u origin docs/update-project-readme
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<details>
+<summary><strong>Jika push ditolak karena branch remote memiliki commit baru</strong></summary>
 
-## License
+Ambil perubahan terbaru dan rebase branch kerja sebelum mencoba push kembali:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+git fetch origin
+git status
+git pull --rebase origin NAMA-BRANCH-KERJA
+git push
+```
+
+Jika terjadi konflik, selesaikan konflik pada file terkait, lanjutkan proses rebase, lalu jalankan kembali tes yang sesuai.
+
+</details>
+
+## Keamanan dan privasi
+
+- Jangan commit `.env`, token, kredensial, kunci aplikasi, atau data pasien.
+- `.env.example` hanya template konfigurasi. Simpan nilai rahasia di `.env` lokal atau pengelola rahasia deployment.
+- Gunakan data sintetis untuk pengembangan dan demo. Lindungi data kesehatan sesuai kebijakan dan peraturan yang berlaku.
+- Ganti kata sandi demo, nonaktifkan akun demo, dan tinjau konfigurasi keamanan sebelum deployment.
+- Koreksi catatan pemeriksaan yang telah difinalisasi harus mengikuti prosedur yang dapat ditelusuri.
+
+## Pengembangan
+
+Jalankan tes aplikasi dengan:
+
+```bash
+php artisan test
+```
+
+Bangun aset frontend dengan:
+
+```bash
+npm run build
+```
+
+Struktur direktori penting:
+
+```text
+app/                 Controller, model, middleware, dan logika aplikasi
+database/            Migrasi, factory, dan seeder
+resources/views/     Halaman Blade dan komponen tampilan
+resources/js/        JavaScript frontend
+resources/css/       CSS dan konfigurasi Tailwind
+routes/web.php       Definisi route aplikasi
+tests/               Tes aplikasi
+```
+
+---
+
+<div align="center">
+
+Dibuat untuk mendukung alur administrasi praktik dokter yang lebih tertata.
+
+</div>
