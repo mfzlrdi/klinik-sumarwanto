@@ -1,4 +1,4 @@
-# Sistem Informasi Administrasi Pelayanan Pasien — Praktik Dokter Umum dr. Sumarwanto
+# Sistem Informasi Administrasi Pelayanan Pasien, Praktik Dokter Umum dr. Sumarwanto
 
 Aplikasi web untuk mengelola administrasi pasien, nomor antrean, kunjungan, pemeriksaan dokter, resep, dan riwayat pelayanan dalam satu sistem terpusat.
 
