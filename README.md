@@ -1,4 +1,4 @@
-# Sistem Informasi Administrasi Pelayanan Pasien, Praktik Dokter Umum dr. Sumarwanto
+# Sistem Informasi Administrasi Pelayanan Pasien Praktik Dokter Umum dr. Sumarwanto
 
 Aplikasi web untuk mengelola administrasi pasien, nomor antrean, kunjungan, pemeriksaan dokter, resep, dan riwayat pelayanan dalam satu sistem terpusat.
 
@@ -118,7 +118,7 @@ Seluruh tabel bisnis dan kolom menggunakan Bahasa Indonesia dengan format `snake
 - **Landing page company profile** di `/` (publik) berisi hero, layanan, profil dokter, alur pelayanan, jadwal, dan kontak yang menarik pengunjung.
 - **Sidebar teal solid** dengan animasi: saat ditutup di desktop berubah menjadi rail ikon (logo + ikon menu tetap tampil), dan dapat dibuka/tutup lewat tombol hamburger di desktop, tablet, dan mobile.
 - **Jam & tanggal live** di navbar samping ikon monitor.
-- **Pengaturan fungsional**: mengubah ikon logo, nama logo, subjudul logo, identitas praktik, dan teks landing page — langsung tercermin di sidebar, navbar, dan halaman publik.
+- **Pengaturan fungsional**: mengubah ikon logo, nama logo, subjudul logo, identitas praktik, dan teks landing page langsung tercermin di sidebar, navbar, dan halaman publik.
 - Katalog obat, manajemen pengguna, data dokter, pengaturan sistem, dan audit aktivitas.
 - Laporan kunjungan dengan filter rentang tanggal dan tampilan cetak.
 - Notifikasi lonceng dengan jumlah belum dibaca (polling ringan).
