@@ -1,125 +1,156 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Administrasi Pelayanan Pasien — Praktik Dokter Umum dr. Sumarwanto
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web untuk mengelola administrasi pasien, nomor antrean, kunjungan, pemeriksaan dokter, resep, dan riwayat pelayanan dalam satu sistem terpusat.
 
-## About Laravel
+## Ringkasan & Arsitektur
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend:** Laravel 13, PHP 8.3+ (dikembangkan di 8.4), OOP, arsitektur MVC.
+- **Database:** MySQL 8.4 (`sistem_informasi_praktik_dokter`), Eloquent ORM, migrations, factories, seeders.
+- **Frontend:** Blade, Tailwind CSS v4, JavaScript (Vanilla + Axios + Chart.js), ikon Lucide, Vite.
+- **Autentikasi & otorisasi:** session auth, middleware peran (`role:`), policies per model.
+- **Notifikasi:** disimpan persisten di tabel `notifikasi`, dibaca melalui polling ringan di navbar (cadangan terdokumentasi).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Peran pengguna
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Peran | Kewenangan utama |
+| --- | --- |
+| `resepsionis` | Kelola pasien, pendaftaran kunjungan, antrean, tindak lanjut obat. |
+| `dokter` | Antrean konsultasi, pemeriksaan/rekam medis, resep. |
+| `administrator` | Kelola pengguna, data dokter, katalog obat, laporan, pengaturan, audit. |
 
-## Push ke GitHub
+Satu akun dapat memiliki lebih dari satu peran (akun dr. Sumarwanto memiliki `dokter` dan `administrator`).
 
-### 1. Buat repository GitHub
+## Persyaratan lingkungan
 
-1. Masuk ke GitHub dan pilih **New repository**.
-2. Tentukan nama repository dan visibilitasnya.
-3. Untuk menghindari konflik awal, buat repository kosong tanpa README, `.gitignore`, atau license otomatis.
-4. Salin URL HTTPS repository yang ditampilkan GitHub.
+- PHP `^8.3` (direkomendasikan 8.3.16, diuji juga pada 8.4.x)
+- Composer 2
+- Node.js 20+ dan npm
+- MySQL 8.4
 
-### 2. Commit dan push branch fitur
+## Instalasi & menjalankan (Laragon)
 
-Jalankan perintah berikut dari folder proyek. Ganti URL dengan repository Anda.
+1. Klon/ekstrak proyek, lalu masuk ke direktori proyek.
+2. Salin konfigurasi dan atur `.env`:
 
-```bash
-git init -b main
-git add .
-git status
-git commit -m "chore: initial project commit"
-git remote add origin https://github.com/USERNAME/NAMA-REPOSITORY.git
-git switch -c feature/initial-upload
-git push -u origin feature/initial-upload
-```
+   ```bash
+   copy .env.example .env
+   ```
 
-Setelah push berhasil, buka repository di GitHub dan buat **Pull Request** dari `feature/initial-upload` ke `main`. Tinjau perubahan sebelum menggabungkannya.
+   Sesuaikan `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` dengan koneksi MySQL lokal.
 
-### Push perubahan berikutnya
+3. Install dependency dan buat key:
 
-Untuk mengirim perubahan yang sudah ada di branch kerja:
+   ```bash
+   composer install
+   php artisan key:generate
+   npm install
+   ```
 
-```bash
-git status
-git add README.md
-git commit -m "docs: update project README"
-git push
-```
+4. Buat database dan jalankan migration + seeder:
 
-Jika perubahan baru perlu dipisahkan, buat branch terlebih dahulu, lalu push branch tersebut dan ajukan Pull Request:
+   ```bash
+   mysql -u root -e "CREATE DATABASE IF NOT EXISTS sistem_informasi_praktik_dokter CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+   php artisan migrate --seed
+   ```
 
-```bash
-git switch -c docs/update-project-readme
-git add README.md
-git commit -m "docs: update project README"
-git push -u origin docs/update-project-readme
-```
+5. Bangun aset dan jalankan server:
 
-<details>
-<summary><strong>Jika push ditolak karena branch remote memiliki commit baru</strong></summary>
+   ```bash
+   npm run build
+   php artisan serve
+   ```
 
-Ambil perubahan terbaru dan rebase branch kerja sebelum mencoba push kembali:
+   Buka `http://127.0.0.1:8000` (atau sesuaikan virtual host Laragon).
 
-```bash
-git fetch origin
-git status
-git pull --rebase origin NAMA-BRANCH-KERJA
-git push
-```
+## Akun demo
 
-Jika terjadi konflik, selesaikan konflik pada file terkait, lanjutkan proses rebase, lalu jalankan kembali tes yang sesuai.
+| Peran | Email | Kata sandi |
+| --- | --- | --- |
+| Dokter + Administrator | `dokter@praktik.test` | `DokterDemo123!` |
+| Resepsionis | `resepsionis@praktik.test` | `ResepsionisDemo123!` |
 
-</details>
+## Kamus data
 
-## Keamanan dan privasi
+Seluruh tabel bisnis dan kolom menggunakan Bahasa Indonesia dengan format `snake_case`, kunci utama berawalan `id_`, dan waktu memakai `dibuat_pada`/`diperbarui_pada`. Tabel infrastruktur Laravel (`sessions`, `cache`, `jobs`) mengikuti konvensi framework.
 
-- Jangan commit `.env`, token, kredensial, kunci aplikasi, atau data pasien.
-- `.env.example` hanya template konfigurasi. Simpan nilai rahasia di `.env` lokal atau pengelola rahasia deployment.
-- Gunakan data sintetis untuk pengembangan dan demo. Lindungi data kesehatan sesuai kebijakan dan peraturan yang berlaku.
-- Ganti kata sandi demo, nonaktifkan akun demo, dan tinjau konfigurasi keamanan sebelum deployment.
-- Koreksi catatan pemeriksaan yang telah difinalisasi harus mengikuti prosedur yang dapat ditelusuri.
+| Tabel | Keterangan |
+| --- | --- |
+| `pengguna` | Akun yang dapat masuk aplikasi. |
+| `peran` | Daftar peran (`dokter`, `resepsionis`, `administrator`). |
+| `pengguna_peran` | Relasi banyak-ke-banyak akun dengan peran. |
+| `dokter` | Profil profesi dokter, terhubung ke `pengguna`. |
+| `pasien` | Biodata pasien dengan `nomor_rekam_medis` unik. |
+| `kunjungan` | Data kunjungan + nomor antrean (unik per tanggal). |
+| `rekam_medis` | Catatan pemeriksaan klinis per kunjungan. |
+| `diagnosa` | Diagnosa pada rekam medis. |
+| `tindakan_medis` | Tindakan medis pada rekam medis. |
+| `obat` | Katalog obat. |
+| `resep` | Resep obat (`draf`, `difinalisasi`, `dibatalkan`). |
+| `rincian_resep` | Item obat dalam resep (snapshot nama saat diresepkan). |
+| `pemenuhan_resep` | Tugas tindak lanjut obat, terpisah dari notifikasi. |
+| `rincian_penyerahan_obat` | Catatan penyerahan per item (mendukung penyerahan sebagian). |
+| `notifikasi` | Notifikasi persisten per penerima. |
+| `surat_keterangan_sakit` | Surat keterangan sakit bernomor per kunjungan. |
+| `catatan_aktivitas` | Jejak audit tindakan penting. |
+| `pengaturan_sistem` | Konfigurasi informasi praktik. |
 
-## Pengembangan
+### Nilai status
 
-Jalankan tes aplikasi dengan:
+- **Status kunjungan:** `menunggu`, `dipanggil`, `sedang_konsultasi`, `selesai`, `dibatalkan`.
+- **Status rekam medis:** `draf`, `difinalisasi`.
+- **Status resep:** `draf`, `difinalisasi`, `dibatalkan`.
+- **Status pemenuhan:** `menunggu`, `sedang_diproses`, `siap_diserahkan`, `diserahkan_sebagian`, `selesai_diserahkan`, `dirujuk_ke_apotek_luar`, `terhambat`.
+
+## Fitur yang telah selesai
+
+- Autentikasi login/logout, proteksi route, multi-peran (dokter + administrator dalam satu akun).
+- Dashboard per peran (resepsionis, dokter, administrator) dengan statistik nyata dan grafik kunjungan.
+- Manajemen pasien (CRUD, pencarian, nomor rekam medis otomatis, riwayat kunjungan).
+- Pendaftaran kunjungan dengan nomor antrean backend (anti-duplikasi) dan cetak tiket antrean.
+- Alur antrean: panggil → mulai konsultasi → selesai → batalkan dengan validasi transisi.
+- **Halaman pemeriksaan terpadu** untuk pasien yang sedang konsultasi: rekam medis (tanda vital, hasil, diagnosa, tindakan), resep multi-item (1/2/3 obat dengan tombol tambah item), serta surat keterangan sakit dalam satu ruang kerja.
+- **Riwayat rekam medis pasien** untuk dokter melihat pemeriksaan-pemeriksaan sebelumnya sebelum konsultasi.
+- Resep: draft, finalisasi (memicu notifikasi ke resepsionis), pembatalan, cetak resep.
+- Tindak lanjut obat: perubahan status dan pencatatan penyerahan (penuh/sebagian).
+- **Surat keterangan sakit**: pembuatan otomatis bernomor, pencetakan formal, dan penyimpanan riwayat.
+- **Suara panggilan antrean**: bunyi "ding" + pengumuman berbahasa Indonesia ("Nomor Antrian A-001, silakan memasuki ruangan dr. Sumarwanto") diulang 2 kali, memakai suara bawaan browser (Web Speech API, gratis tanpa layanan luar).
+- **Monitor TV antrean live** di `/monitor-antrean` (publik, data pasien disamarkan) menampilkan kolom Menunggu, Dipanggil, Sedang Konsultasi, dan Selesai, diperbarui otomatis.
+- **Landing page company profile** di `/` (publik) berisi hero, layanan, profil dokter, alur pelayanan, jadwal, dan kontak yang menarik pengunjung.
+- **Sidebar teal solid** dengan animasi: saat ditutup di desktop berubah menjadi rail ikon (logo + ikon menu tetap tampil), dan dapat dibuka/tutup lewat tombol hamburger di desktop, tablet, dan mobile.
+- **Jam & tanggal live** di navbar samping ikon monitor.
+- **Pengaturan fungsional**: mengubah ikon logo, nama logo, subjudul logo, identitas praktik, dan teks landing page — langsung tercermin di sidebar, navbar, dan halaman publik.
+- Katalog obat, manajemen pengguna, data dokter, pengaturan sistem, dan audit aktivitas.
+- Laporan kunjungan dengan filter rentang tanggal dan tampilan cetak.
+- Notifikasi lonceng dengan jumlah belum dibaca (polling ringan).
+
+## Suara panggilan & monitor TV
+
+- Buka `/monitor-antrean` di layar TV ruang tunggu, lalu klik **Aktifkan Suara** sekali (kebijakan browser mewajibkan interaksi pengguna sebelum memutar audio).
+- Suara memakai `SpeechSynthesis` bahasa Indonesia (`id-ID`) bawaan browser dan bunyi "ding" dari Web Audio API. Tidak ada layanan pihak ketiga.
+- Panggilan dari dashboard dokter juga memutar suara yang sama secara otomatis.
+
+## Menjalankan tes
 
 ```bash
 php artisan test
 ```
 
-Bangun aset frontend dengan:
+Alur penting tercakup dalam feature test: autentikasi, otorisasi antar-peran, pembuatan pasien, nomor antrean, transisi status, pembuatan/finalisasi resep, notifikasi, halaman pemeriksaan, surat keterangan sakit, dan monitor antrean publik.
 
-```bash
-npm run build
-```
+## Batasan yang diketahui
 
-Struktur direktori penting:
+- Notifikasi waktu nyata memakai polling AJAX ringan (bukan WebSocket/Reverb) karena di lingkungan lokal; data tetap persisten di database.
+- Pengelolaan stok obat belum diaktifkan (katalog obat hanya sebagai referensi resep).
+- Koreksi resep yang telah difinalisasi dilakukan melalui alur pembatalan yang terlacak (bukan penimpaan langsung).
+- Suara panggilan bergantung pada dukungan browser terhadap Web Speech API (Chrome/Edge umumnya menyediakan suara `id-ID`).
+- Monitor antrean bersifat publik dengan nama disamarkan (mis. "Budi S."); tidak menampilkan data klinis.
 
-```text
-app/                 Controller, model, middleware, dan logika aplikasi
-database/            Migrasi, factory, dan seeder
-resources/views/     Halaman Blade dan komponen tampilan
-resources/js/        JavaScript frontend
-resources/css/       CSS dan konfigurasi Tailwind
-routes/web.php       Definisi route aplikasi
-tests/               Tes aplikasi
-```
+## Keamanan & privasi
+
+- Jangan commit `.env` atau kredensial. Gunakan `.env.example` sebagai template.
+- Gunakan data sintetis untuk demo; jangan masukkan data pasien nyata.
+- Ganti kata sandi demo sebelum penggunaan nyata.
 
 ---
 
-<div align="center">
-
 Dibuat untuk mendukung alur administrasi praktik dokter yang lebih tertata.
-
-</div>

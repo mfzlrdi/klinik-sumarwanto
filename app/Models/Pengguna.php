@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -44,6 +46,26 @@ class Pengguna extends Authenticatable
     public function peran(): BelongsToMany
     {
         return $this->belongsToMany(Peran::class, 'pengguna_peran', 'id_pengguna', 'id_peran');
+    }
+
+    public function notifikasi(): HasMany
+    {
+        return $this->hasMany(Notifikasi::class, 'id_pengguna_penerima');
+    }
+
+    public function dokter(): HasOne
+    {
+        return $this->hasOne(Dokter::class, 'id_pengguna');
+    }
+
+    public function notifikasiTerbaru(): HasMany
+    {
+        return $this->notifikasi()->latest('dibuat_pada');
+    }
+
+    public function jumlahNotifikasiBelumDibaca(): int
+    {
+        return $this->notifikasi()->whereNull('dibaca_pada')->count();
     }
 
     public function memilikiPeran(string ...$peran): bool

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\BagikanPengaturanSistem;
 use App\Http\Middleware\PeriksaPeran;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias(['role' => PeriksaPeran::class]);
+        $middleware->web(append: [BagikanPengaturanSistem::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

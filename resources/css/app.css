@@ -6,8 +6,13 @@
 @source '../js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+
+    --color-teal-solid: #0d5c56;
+    --color-teal-deep: #0a4a45;
+    --color-teal-ink: #083c38;
+    --color-teal-soft: #e7f3f0;
+    --color-teal-accent: #2f9c8c;
 }
 
 :root {
@@ -25,11 +30,13 @@
 body {
     min-width: 360px;
     margin: 0;
-    background: #fff;
+    background: #f6f9f8;
 }
 
 button,
-input {
+input,
+select,
+textarea {
     font: inherit;
 }
 
@@ -48,8 +55,156 @@ input {
     background: #e1e9e7;
 }
 
+.sidebar-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* ====== Animasi ====== */
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-in {
+    from { opacity: 0; transform: translateX(24px) scale(.97); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes modal-pop {
+    from { opacity: 0; transform: translateY(14px) scale(.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes overlay-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(.8); opacity: .7; }
+    100% { transform: scale(1.8); opacity: 0; }
+}
+
+.animate-fade-in { animation: fade-in .35s ease-out both; }
+.animate-slide-up { animation: slide-up .4s ease-out both; }
+.animate-toast-in { animation: toast-in .3s cubic-bezier(.2, .8, .3, 1) both; }
+.animate-modal-pop { animation: modal-pop .22s ease-out both; }
+.animate-overlay-in { animation: overlay-in .2s ease-out both; }
+
+.stagger > * {
+    animation: slide-up .45s ease-out both;
+}
+
+.stagger > *:nth-child(1) { animation-delay: .02s; }
+.stagger > *:nth-child(2) { animation-delay: .06s; }
+.stagger > *:nth-child(3) { animation-delay: .1s; }
+.stagger > *:nth-child(4) { animation-delay: .14s; }
+.stagger > *:nth-child(5) { animation-delay: .18s; }
+.stagger > *:nth-child(6) { animation-delay: .22s; }
+
+/* ====== Sidebar: rail ikon saat tertutup (desktop), geser saat mobile ====== */
+.sidebar-panel {
+    transition: width .28s cubic-bezier(.4, 0, .2, 1), transform .28s cubic-bezier(.4, 0, .2, 1);
+    will-change: width, transform;
+}
+
+@media (max-width: 1023px) {
+    .sidebar-panel {
+        width: 260px;
+        transform: translateX(-100%);
+    }
+
+    body.sidebar-terbuka .sidebar-panel {
+        transform: translateX(0);
+    }
+}
+
+@media (min-width: 1024px) {
+    .sidebar-panel {
+        width: 76px;
+        transform: translateX(0);
+    }
+
+    body.sidebar-terbuka .sidebar-panel {
+        width: 260px;
+    }
+
+    body:not(.sidebar-terbuka) .sidebar-label,
+    body:not(.sidebar-terbuka) .sidebar-brand-text,
+    body:not(.sidebar-terbuka) .sidebar-user-meta,
+    body:not(.sidebar-terbuka) .sidebar-section-title,
+    body:not(.sidebar-terbuka) .sidebar-status,
+    body:not(.sidebar-terbuka) .sidebar-indicator {
+        display: none;
+    }
+
+    body:not(.sidebar-terbuka) .sidebar-brand,
+    body:not(.sidebar-terbuka) .sidebar-user,
+    body:not(.sidebar-terbuka) .sidebar-link {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.konten-utama {
+    transition: padding-left .28s cubic-bezier(.4, 0, .2, 1);
+}
+
+@media (min-width: 1024px) {
+    .konten-utama {
+        padding-left: 76px;
+    }
+
+    body.sidebar-terbuka .konten-utama {
+        padding-left: 260px;
+    }
+}
+
+.sidebar-tooltip {
+    pointer-events: none;
+}
+
+.sidebar-nav-link {
+    transition: background-color .16s ease, color .16s ease, transform .16s ease;
+}
+
+.sidebar-nav-link:hover {
+    transform: translateX(3px);
+}
+
+/* Toast */
+.toast-stack {
+    pointer-events: none;
+}
+
+.toast-stack > * {
+    pointer-events: auto;
+}
+
 @media print {
     .no-print {
         display: none !important;
+    }
+
+    body {
+        background: #fff;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
     }
 }
